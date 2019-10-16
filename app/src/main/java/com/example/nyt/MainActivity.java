@@ -1,26 +1,49 @@
 package com.example.nyt;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.view.MenuItem;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recyclerView = findViewById(R.id.rv_main);
-        layoutManager = new LinearLayoutManager(this );
-        recyclerView.setLayoutManager(layoutManager);
+        HomeFragment fragment = new HomeFragment();
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction =
+                fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentSlot, fragment);
+        fragmentTransaction.commit();
 
-        ArticleAdapter articleAdapter = new ArticleAdapter();
-        articleAdapter.setData(FakeDatabase.getAllArticles());
-        recyclerView.setAdapter(articleAdapter);
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_article:
+                        fragmentManager.beginTransaction().replace(R.id.fragmentSlot, new HomeFragment()).commit();
+
+
+                    case R.id.nav_books:
+
+                        break;
+                    case R.id.nav_profile:
+                        fragmentManager.beginTransaction().replace(R.id.fragmentSlot, new Profile()).commit();
+                }
+                return true;
+            }
+
+
+
+        });
+        }
     }
-}
+
